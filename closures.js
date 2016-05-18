@@ -13,10 +13,13 @@ var outer = function(){
 
 // Code Here
 
+var inner = outer();
+
 
 //Once you do that, invoke inner.
 
   //Code Here
+  inner();
 
 
 
@@ -37,7 +40,10 @@ var callFriend = function(){
 
   //Code Here
 
-
+function makeCall() {
+  var newCall = callFriend();
+  newCall('435-215-9248');
+}
 
 
 
@@ -52,6 +58,13 @@ var callFriend = function(){
 */
 
 //Code Here
+
+function makeCounter() {
+  var counter = 0;
+  return function() {
+    return counter += 1;
+  }
+}
 
 //Uncomment this once you make your function
 //   var count = makeCounter();
@@ -75,13 +88,23 @@ function counterFactory(value) {
 
   // Code here.
 
-
   return {
+    inc: function() {
+      return ++value;
+    },
+    dec: function() {
+      return --value;
+    }
   }
 }
 
 
 counter = counterFactory(10);
+
+//++value increments the variable, returning the new value.
+//value++ increments the variable, but returns the old value.
+//--value decrements the variable, returning the new value.
+//value-- decrements the variable, but returns the old value.
 
 
 
@@ -96,11 +119,14 @@ counter = counterFactory(10);
     var welcomeText = 'You\'re doing awesome, keep it up ';
 
     // code message function here.
+    function message() {
+      return welcomeText + firstname + ' ' + lastname + '.';
+    }
 
 
     //Uncommment this to return the value of your invoked message function
 
-    //return message()
+    return message()
   }
 
   motivation('Billy', 'Bob'); // 'Your doing awesome keep it up Billy Bob
@@ -127,12 +153,15 @@ counter = counterFactory(10);
 
     return {
       // Code here.
+      publicMethod: function() {
+       return privateMethod();
+      }
     };
 
   })();
 
 //Uncomment this after you create your public method
-//   module.publicMethod();
+  module.publicMethod();
 
 
 
@@ -141,11 +170,14 @@ counter = counterFactory(10);
 // So that it logs ( 0 then 1 then 2 then 3, etc). Run this code in your console to see what the output is.
 
 
+
 function timeOutCounter() {
   for (var i = 0; i <= 5; i++) {
-    setTimeout(function() {
-      console.log(i);
-    }, i * 1000)
+    setTimeout(function(i) {
+      return function() {
+        newScope(i);
+      }
+    }(i), i * 1000)
   }
 
   function newScope(i) {
@@ -155,23 +187,55 @@ function timeOutCounter() {
 timeOutCounter();
   // To make this code work you will need to create a new scope for every iteration.
 
+  //Before fixing, the above code will log each number 1 second after another, but they're all 6's.
+  //This is because we are passing the reference to the variable i, but not the actual value at the
+  //moment inside each loop. By the time the setTimeout function is executed, the for statement has 
+  //already incremented the value of i to 6.
 
+  //To fix this, we need to pass the setTimeout function the actual value of i at each loop execution.
+  //We must create a new scope so each loop will have access to the value of i at the right moment
 
 
 
 //////////////////PROBLEM 8////////////////////
 
-var funcArray = [];
+  var funcArray = [
+
+  function() {
+    return 0;
+   },
+  function() {
+    return 1;
+    }, 
+  function() {
+    return 2;
+    },
+  function() {
+    return 3;
+    },
+  function() {
+    return 4;
+    },
+  function() {
+    return 5;
+    },
+    
+  ];
+
+  funcArray[0]();
+  funcArray[1]();
+  funcArray[2]();
+  funcArray[3]();
+  funcArray[4]();
+  funcArray[5]();
 
 /*
   Make the following code work
-
   funcArray[0]() //0
   funcArray[1]() //1
   funcArray[2]() //2
   funcArray[3]() //3
   funcArray[4]() //4
   funcArray[5]() //5
-
   *Hint: Don't let this fool you. Break down what's really happening here.
 */
